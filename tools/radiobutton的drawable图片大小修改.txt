@@ -1,0 +1,13 @@
+ for (int i = 0; i < mOptions.getChildCount(); i++) {
+            RadioButton rb = (RadioButton) mOptions.getChildAt(i);
+            //挨着给每个RadioButton加入drawable限制边距以控制显示大小
+            Drawable[] drs = rb.getCompoundDrawables();
+            //获取drawables
+            Rect r = new Rect(0, 0, drs[1].getMinimumWidth() * 4 / 7, drs[1].getMinimumHeight() * 4 / 7);
+            //定义一个Rect边界
+            drs[1].setBounds(r);
+            //给drawable设置边界
+
+            rb.setCompoundDrawables(null, drs[1], null, null);
+            //添加限制给控件
+        }

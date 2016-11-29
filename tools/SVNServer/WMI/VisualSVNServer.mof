@@ -1,0 +1,421 @@
+
+#pragma classflags("forceupdate")
+
+#pragma namespace ("\\\\.\\root")
+
+[guid("{D5E2BB03-081A-4286-AA46-2AA83573A932}")
+ ,NamespaceSecuritySDDL("D:(A;CI;CCDCWP;;;S-1-5-21-244230776-1084179779-529540085-1006)")]
+instance of __NameSpace
+{
+    Name = "VisualSVN";
+};
+
+#pragma namespace ("\\\\.\\root\\VisualSVN")
+
+class Win32_ProviderEx : __Win32Provider
+{
+    [Description ( "Hosting Model, provides compatibility with Windows XP and Windows Server .NET. Do not override." ) , Override("HostingModel")]
+    string HostingModel = "NetworkServiceHost";
+    [Description("..."),Override("SecurityDescriptor")] 
+    string SecurityDescriptor; 
+    UInt32 version = 1;
+};
+
+instance of Win32_ProviderEx as $P
+{
+    Name    = "VisualSVNWMIProvider";
+    ClsId   = "{3E7CF778-9DCE-4D0F-A71D-B77FB0FB5E39}";
+    ImpersonationLevel = 1;
+    PerUserInitialization = TRUE;
+    HostingModel = "NetworkServiceHost:VisualSVN-2.7.3";
+};
+
+instance of __InstanceProviderRegistration
+{
+    Provider = $P;
+
+    SupportsPut = "TRUE"; 
+    SupportsGet = "TRUE"; 
+    SupportsDelete = "FALSE"; 
+    SupportsEnumeration = "TRUE"; 
+};
+
+instance of __MethodProviderRegistration
+{
+    Provider = $P;
+};
+
+[provider("VisualSVNWMIProvider"), dynamic, abstract]
+class VisualSVN_Account
+{
+};
+
+class VisualSVN_WindowsAccount : VisualSVN_Account
+{
+    [key] string SID;
+};
+
+[provider("VisualSVNWMIProvider"), dynamic, abstract]
+class VisualSVN_SubversionAccount : VisualSVN_Account
+{
+    [key] string Name;
+};
+
+[singleton]
+class VisualSVN_Everyone : VisualSVN_Account
+{
+    string Name;
+};
+
+instance of VisualSVN_Everyone
+{
+    Name="Everyone";
+};
+
+[provider("VisualSVNWMIProvider"), dynamic]
+class VisualSVN_User : VisualSVN_SubversionAccount
+{
+    [implemented, static] void Create([in] string Name, [in] string Password);
+    [implemented, static] void Delete([in] string Name);
+    [implemented] void SetPassword([in] string Password);
+};
+
+[provider("VisualSVNWMIProvider"), dynamic]
+class VisualSVN_Group : VisualSVN_SubversionAccount
+{
+    [implemented, static] void Create([in] string Name,
+                                      [in] VisualSVN_SubversionAccount ref Members[]);
+    [implemented, static] void Delete([in] string Name);
+    [implemented] void GetMembers([out] VisualSVN_SubversionAccount Members[]);
+    [implemented] void SetMembers([in] VisualSVN_SubversionAccount ref Members[]);
+};
+
+class VisualSVN_PermissionEntry
+{
+    VisualSVN_Account Account;
+
+    [Description ("0 - no access, 1 - read only, 2 - read/write"),
+     Values{"No Access", "Read Only", "Read Write"}] 
+    uint32 AccessLevel;
+};
+
+class VisualSVN_CertifcateInformation
+{
+    [Read] string IssuedTo;
+    [Read] string IssuedBy;
+    [Read] datetime ValidFrom;
+    [Read] datetime ValidTo;
+    [Read] string Organization;
+    [Read] string OrganizationUnit;
+    [Read] string CountryCode;
+    [Read] string State;
+    [Read] string City;
+    [Read] string Base64Certificate;
+};
+
+[provider("VisualSVNWMIProvider"), dynamic]
+class VisualSVN_Service
+{
+    [Key] string Name;
+    
+    [
+        Read,
+        MappingStrings{"Win32API|Service Structures|SERVICE_STATUS|dwCurrentState"},
+        ValueMap{"Stopped", "Start Pending", "Stop Pending", "Running", "Continue Pending", "Pause Pending", "Paused", "Unknown"}
+    ]
+    uint32 ServiceState;
+
+    [
+        Read,
+        MappingStrings{"Win32API|Service Structures|SERVICE_STATUS|dwWin32ExitCode"}
+    ]
+    uint32 ExitCode;
+    
+    [Read] string URL;
+
+    [Read] string ServerName;
+    [Read] boolean UseCustomServerName;
+    [Read] string CustomServerName; 
+
+    [Read] string RepositoriesRoot;
+    [Read] boolean AdjustRepositoriesRootPermissions;
+
+    [Read] boolean UseSecureConnection;
+    [Read] uint16 UnsecurePort;
+    [Read] uint16 SecurePort;
+    [Read] boolean ListenAllIPAddresses;
+    [Read] string ListenIPAddressesArray[];
+
+    [Read] boolean AuthWindowsBasic;
+    [Read] boolean AuthWindowsIntegrated;
+
+    [Read] boolean AccessLoggingEnabled;
+    [Read] boolean OperationalLoggingEnabled;
+
+    [implemented] void StartService();
+    [implemented] void StopService();
+    [implemented] void RestartService();
+
+    [Description ("0 - subversion authentication, 1 - windows authentication"),
+     Values{"Subversion", "Windows"},
+     Read] uint32 AuthType;
+    [Read] boolean UseUPNFormat;
+
+    [implemented, Values{"Success", "DoesNotExists"}]
+    uint32 SetRepositoriesRoot([in] string RepositoriesRoot,
+                               [in] boolean AdjustPermissions,
+                               [in] boolean ForceCreate = false);
+
+    [implemented]
+    void SetServerName([in] boolean UseCustom, [in] string CustomServerName);
+    [implemented]
+    void SetNetworkOptions([in] uint16 Port,
+                   [in] boolean UseSecureConnection,
+                   [in] string ListenIPAddressesArray[]);
+    [implemented]
+    void SetAuthenticationOptions([in, Values{"Subversion", "Windows"}] uint32 AuthType,
+                 [in] boolean WindowsBasic,
+                 [in] boolean WindowsIntegrated,
+                 [in] boolean UseUPNFormat = false);
+
+    [implemented]
+    void SetLoggingOptions([in] boolean EnableAccessLogging,
+                           [in] boolean EnableOperationalLogging);
+
+    [implemented] VisualSVN_CertifcateInformation GetCertificateInformation();
+    [implemented] void ImportCertificate([in] string Base64Certificate);
+    [implemented,
+     Values{"Matched", "KeyMatched", "KeyConflict", "KeyMissed"}]
+                uint32 ValidateCertificate([in] string Base64Certificate);
+    [implemented] void CreateSelfSignedCertificate([in] string CommonName,
+                                                   [in] string Organization,
+                                                   [in] string OrganizationUnit,
+                                                   [in] string CountryCode,
+                                                   [in] string State,
+                                                   [in] string City,
+                                                   [in] uint32 Days);
+    [implemented] string CreateCertificateRequest([in] string CommonName,
+                                                  [in] string Organization,
+                                                  [in] string OrganizationUnit,
+                                                  [in] string CountryCode,
+                                                  [in] string State,
+                                                  [in] string City);
+};
+
+[provider("VisualSVNWMIProvider"), dynamic, abstract]
+class VisualSVN_RepositoryEntry
+{
+    [Description ("'repo' for repository and entry"), key]
+    string RepositoryName;
+    [Description ("'/' for repo root, '/folder/file' for entry"), key]
+    string Path;
+
+    [Description ("This property is true, if object has only inherited permissions.")]
+    boolean InheritedOnlyPermissions;
+
+    string Name;
+    [Description ("null for repo root")]
+    string ParentPath;
+    string URL;
+    
+    [Description ("0 - File, 1 - Folder"), Values{"File", "Folder"}]
+    uint32 Kind;
+};
+
+[provider("VisualSVNWMIProvider"), dynamic]
+class VisualSVN_Repository
+{
+    [Description ("Repository name"), key]
+    string Name;
+
+    string URL;
+
+    [Description ("This property is true, if object has only inherited permissions.")]
+    boolean InheritedOnlyPermissions;
+
+    [static, implemented] void Create([in] string Name);
+    [static, implemented] void Rename([in] string OldName, [in] string NewName);
+    [static, implemented] void Delete([in] string Name);
+
+    [implemented] void GetChildren([in] string Path, [out] VisualSVN_RepositoryEntry Children[]);
+    [implemented] void Upgrade();
+
+    [implemented] void CreateFolders([in] string Folders[], [in] string Message);
+    [implemented] void DeleteFolders([in] string Folders[], [in] string Message);
+
+    [Description ("Repository capabilities. Supported capabilites: 'mergeinfo'"), implemented] 
+    boolean HasCapability([in] string Capability);
+
+    [implemented] boolean GetHook([Values{"PostCommit", "PostLock", "PostPropChange", "PostUnlock",
+                                          "PreCommit", "PreLock", "PrePropChnage", "PreUnlock",
+                                          "StartCommit"}, in] uint32 Kind, [out] string Hook);
+
+    [implemented] void SetHook([Values{"PostCommit", "PostLock", "PostPropChange", "PostUnlock",
+                                       "PreCommit", "PreLock", "PrePropChnage", "PreUnlock",
+                                       "StartCommit"}, in] uint32 Kind, [in] string Hook);
+
+    [implemented] void DeleteHook([Values{"PostCommit", "PostLock", "PostPropChange", "PostUnlock",
+                                          "PreCommit", "PreLock", "PrePropChnage", "PreUnlock",
+                                          "StartCommit"}, in] uint32 Kind);
+
+    [static, implemented] void GetGlobalSecurity([out] VisualSVN_PermissionEntry Permissions[]);
+    [static, implemented] void SetGlobalSecurity([in] VisualSVN_PermissionEntry Permissions[]);
+
+    [implemented] void GetSecurity([in] string Path,
+                                   [out] VisualSVN_PermissionEntry Permissions[]);
+    [implemented] void SetSecurity([in] string Path,
+                                   [in] VisualSVN_PermissionEntry Permissions[],
+                                   [in] boolean ResetChildren = false);
+
+    [implemented] void GetDelegationSettings([out] boolean Enabled,
+                                             [out] VisualSVN_WindowsAccount Managers[]);
+    [implemented] void SetDelegationSettings([in] boolean Enabled,
+                                             [in] VisualSVN_WindowsAccount Managers[]);
+};
+
+[provider("VisualSVNWMIProvider"), dynamic]
+class VisualSVN_SecurityDescriptor
+{
+    [key] object ref AssociatedObject;
+    VisualSVN_PermissionEntry Permissions[];
+};
+
+[Singleton, provider("VisualSVNWMIProvider"), dynamic]
+class VisualSVN_VersionInfo
+{
+    string Version;
+    string SubversionVersion;
+    string ApacheVersion;
+};
+
+[Singleton, provider("VisualSVNWMIProvider"), dynamic]
+class VisualSVN_LicenseInfo
+{
+    [Read,
+     Values{"Valid", "Invalid", "Expired", "NotStarted", "NoLicense", "MaintenanceExpired" }] 
+        uint32 Status;
+
+    [Description( "Possible values are: 'Enterprise'"),
+     Read] string Type;
+    [Read] string LicensedTo;
+
+    [Description("True if license has limited time."), Read]
+    boolean TimeLimited;
+
+    [Description( "If license lifetime is unlimited the filed is null"),
+     Read] datetime StartTime;
+    [Description( "If license lifetime is unlimited the filed is null"),
+     Read] datetime EndTime;
+
+    [Description( "License remaining time in minutes. If license lifetime is unlimited the filed is null"),
+     Read] uint32 RemainingTime;
+
+    [Description( "License maintenance period end time. If maintenance period is not restricted the field is null"),
+     Read] datetime MaintenanceEndTime;
+
+    [implemented, static,
+     Values{"Valid", "Invalid", "Expired", "NotStarted" }]
+        uint32 UpdateLicense([in] string LicenseKey);
+
+    [implemented, static]
+    VisualSVN_LicenseInfo ParseLicense([in] string LicenseKey);
+};
+
+
+/****************************************
+ * VisualSVN RepoManager WMI Provider   *
+ ***************************************/
+
+[guid("{8047134F-BFCF-4360-AADB-A73246275359}")
+ ,NamespaceSecuritySDDL("D:(A;CI;CCDCWP;;;S-1-5-21-244230776-1084179779-529540085-1007)")]
+instance of __NameSpace
+{
+    Name = "RepoCfg";
+};
+
+#pragma namespace ("\\\\.\\root\\VisualSVN\\RepoCfg")
+
+class Win32_ProviderEx : __Win32Provider
+{
+    [Description ( "Hosting Model, provides compatibility with Windows XP and Windows Server .NET. Do not override." ) , Override("HostingModel")]
+    string HostingModel = "NetworkServiceHost";
+    [Description("..."),Override("SecurityDescriptor")] 
+    string SecurityDescriptor; 
+    UInt32 version = 1;
+};
+
+instance of Win32_ProviderEx as $vrepocfgprov
+{
+    Name    = "vrepocfgprov";
+    ClsId   = "{A1B3BABA-0286-403C-910D-4E3ADF591E2B}";
+    HostingModel = "LocalServiceHost:VisualSVN-2.7.3";
+    ImpersonationLevel = 1;
+    PerUserInitialization = TRUE;
+    SecurityDescriptor = "O:BAG:BAD:(A;;0x1;;;SU)";
+};
+
+instance of __InstanceProviderRegistration
+{
+    Provider = $vrepocfgprov;
+
+    SupportsPut = "FALSE"; 
+    SupportsGet = "TRUE"; 
+    SupportsDelete = "FALSE"; 
+    SupportsEnumeration = "FALSE"; 
+};
+
+instance of __MethodProviderRegistration
+{
+    Provider = $vrepocfgprov;
+};
+
+class VisualSVN_DirEntry
+{
+    [Description ("Empty for ThisNode.")]
+    string Name;
+
+    [Description ("This property is true, if object has only inherited permissions.")]
+    boolean InheritedOnlyPermissions;
+
+    [Description ("This property is true, if object subtree contains at least one object with explicit permissions.")]
+    boolean SubtreePermissions;
+
+    [Description ("0 - None, 1 - File, 2 - Folder"), Values{"None", "File", "Folder"}]
+    uint32 Kind;
+};
+
+class VisualSVN_AccessRule
+{
+    string SID;
+
+    [Description ("0 - no access, 1 - read only, 2 - read/write"),
+     Values{"No Access", "Read Only", "Read Write"}] 
+    uint32 AccessLevel;
+
+    boolean Inherited;
+
+    [Description("Path from this access rule is inherited. Empty string if access rule is not inherited.")]
+    string InheritedFrom;
+};
+
+class VisualSVN_SecurityDescriptor
+{
+    VisualSVN_AccessRule AccessList[];
+};
+
+[provider("vrepocfgprov"), dynamic]
+class VisualSVN_Repository
+{
+    [key] string Name;
+    string URL;
+    uint32 Schema = 1;
+
+    [implemented] void GetDir([in] string Path,
+                              [out] VisualSVN_DirEntry ThisNode,
+                              [out] VisualSVN_DirEntry Children[]);
+
+    [implemented] void GetSecurityDescriptor([in] string Path,
+                                             [out] VisualSVN_SecurityDescriptor SecurityDescriptor);
+    [implemented] void SetSecurityDescriptor([in] string Path,
+                                             [in] VisualSVN_SecurityDescriptor SecurityDescriptor);
+};

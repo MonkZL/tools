@@ -1,0 +1,4 @@
+Java -jar xx.jar width height width,height,width,height
+
+前面width height为标准尺寸
+后面------------为额外尺寸
