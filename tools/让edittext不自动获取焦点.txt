@@ -1,0 +1,7 @@
+在activity中放置了1个或1个以上的EditText,
+进入该activity的时候第一个EditText会接收焦点,
+我希望里面所有的EditText默认是不接收焦点的,该怎么做呢?
+在EditText的父级控件中找一个，添加
+
+Android:focusable="true"
+android:focusableInTouchMode="true"
