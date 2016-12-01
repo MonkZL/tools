@@ -1,0 +1,33 @@
+/**
+     * 创建PopupWindow
+     */
+    protected void initPopuptWindow() {
+
+        KeyboardUtils.hideSoftInput(this);
+
+        popupWindow = new PopupWindow(popWindowView, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT, true);
+        WindowManager.LayoutParams params = getWindow().getAttributes();
+        params.alpha = 0.7f;
+        getWindow().setAttributes(params);
+
+        //点击其他地方消失
+        popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                closePopupWindow();
+            }
+        });
+
+        popupWindow.showAtLocation(popWindowAnchor, Gravity.BOTTOM, 0, 0);
+    }
+
+    /**
+     * 关闭窗口
+     */
+    private void closePopupWindow() {
+        popupWindow.dismiss();
+        popupWindow = null;
+        WindowManager.LayoutParams params = getWindow().getAttributes();
+        params.alpha = 1f;
+        getWindow().setAttributes(params);
+    }
