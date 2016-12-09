@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="zl.com.myapplication.MainActivity">
+
+        <RadioGroup
+            android:id="@+id/rg"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <zl.com.myapplication.SuperRadioButton
+                android:layout_width="0dp"
+                android:layout_height="1000dp"
+                android:layout_weight="1"
+                android:padding="5dp"
+                app:background_checked="#913E48"
+                app:background_unchecked="#ffffff"
+                app:border_color="#913E48"
+                app:border_width="2dp"
+                app:first_title="医师"
+                app:first_title_checked_color="#ffffff"
+                app:first_title_color="#000000"
+                app:first_title_size="16sp"
+                app:offset="10dp"
+                app:radius="5dp"
+                app:second_title="20元/次"
+                app:second_title_checked_color="#ffffff"
+                app:second_title_color="#913E48"
+                app:second_title_size="13sp" />
+
+            <zl.com.myapplication.SuperRadioButton
+                android:layout_width="0dp"
+                android:layout_height="60dp"
+                android:layout_weight="1"
+                android:padding="5dp"
+                app:background_checked="#913E48"
+                app:background_unchecked="#ffffff"
+                app:border_color="#913E48"
+                app:border_width="2dp"
+                app:first_title="主治医师"
+                app:first_title_checked_color="#ffffff"
+                app:first_title_color="#000000"
+                app:first_title_size="16sp"
+                app:offset="10dp"
+                app:radius="5dp"
+                app:second_title="50元/次"
+                app:second_title_checked_color="#ffffff"
+                app:second_title_color="#913E48"
+                app:second_title_size="13sp" />
+
+            <zl.com.myapplication.SuperRadioButton
+                android:layout_width="0dp"
+                android:layout_height="60dp"
+                android:layout_weight="1"
+                android:padding="5dp"
+                app:background_checked="#913E48"
+                app:background_unchecked="#ffffff"
+                app:border_color="#913E48"
+                app:border_width="2dp"
+                app:first_title="副主任医师"
+                app:first_title_checked_color="#ffffff"
+                app:first_title_color="#000000"
+                app:first_title_size="16sp"
+                app:offset="10dp"
+                app:radius="5dp"
+                app:second_title="80元/次"
+                app:second_title_checked_color="#ffffff"
+                app:second_title_color="#913E48"
+                app:second_title_size="13sp" />
+
+            <zl.com.myapplication.SuperRadioButton
+                android:layout_width="0dp"
+                android:layout_height="60dp"
+                android:layout_weight="1"
+                android:padding="5dp"
+                app:background_checked="#913E48"
+                app:background_unchecked="#ffffff"
+                app:border_color="#913E48"
+                app:border_width="2dp"
+                app:first_title="副主任医师"
+                app:first_title_checked_color="#ffffff"
+                app:first_title_color="#000000"
+                app:first_title_size="16sp"
+                app:offset="10dp"
+                app:radius="5dp"
+                app:second_title="100元/次"
+                app:second_title_checked_color="#ffffff"
+                app:second_title_color="#913E48"
+                app:second_title_size="13sp" />
+
+        </RadioGroup>
+
+</LinearLayout>
+
