@@ -1,0 +1,1 @@
+采用post(new Runnable){} 的形式就能获取到 不用measure
