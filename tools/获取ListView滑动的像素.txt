@@ -1,0 +1,9 @@
+public int getScrollY(ListView listView) {
+        View c = listView.getChildAt(0);
+        if (c == null) {
+            return 0;
+        }
+        int firstVisiblePosition = listView.getFirstVisiblePosition();
+        int top = c.getTop();
+        return -top + firstVisiblePosition * c.getHeight();
+    }
