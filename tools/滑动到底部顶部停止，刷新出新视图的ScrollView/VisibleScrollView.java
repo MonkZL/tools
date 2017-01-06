@@ -81,6 +81,7 @@ public class VisibleScrollView extends ScrollView {
         if (otherFlag && scrollY <= 0) {
             topFlag = true;
         } else if ((allHeight - height) <= scrollY && scrollY < allHeight) {
+            LogUtils.log("///////////bottomFlag = true//////////////");
             bottomFlag = true;
         } else if (!otherFlag && scrollY >= allHeight) {
             scrollToBottom = false;
@@ -89,8 +90,9 @@ public class VisibleScrollView extends ScrollView {
             }
             scrollTo(0, 0);
             otherFlag = true;
-
         } else {
+
+            LogUtils.log((allHeight - height) + "///////////bottomFlag = false;//////////////" + scrollY + "/////////" + allHeight);
             bottomFlag = false;
             if (!otherFlag) {
                 if (bottomChild == null)
@@ -113,26 +115,22 @@ public class VisibleScrollView extends ScrollView {
                 scrollToBottom = true;
                 scrollToTopBottom = false;
                 scrollToBottomTop = false;
-                LogUtils.log("11111111111");
             } else if (scrollY < allHeight - height + height / 10 && scrollY > allHeight - height) {
                 scrollToBottom = false;
                 scrollToBottomTop = false;
                 scrollToTop = false;
                 scrollToTopBottom = true;
-                LogUtils.log("22222222222");
             } else if (scrollY < allHeight && scrollY > allHeight - height / 10) {
                 scrollToBottomTop = true;
                 scrollToTop = false;
                 scrollToTopBottom = false;
                 scrollToBottom = false;
-                LogUtils.log("33333333333");
             }
 
             if (scrollY >= allHeight - height + height / 10 && scrollY <= allHeight - height / 10 && bottomChild.getVisibility() == View.VISIBLE) {
                 scrollToBottomTop = false;
                 scrollToTop = true;
                 scrollToTopBottom = false;
-                LogUtils.log("44444444444");
             }
         }
 
