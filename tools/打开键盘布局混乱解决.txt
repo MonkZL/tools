@@ -1,0 +1,2 @@
+加入activity的 清单配置文件里面
+android:windowSoftInputMode="adjustPan|stateHidden"
