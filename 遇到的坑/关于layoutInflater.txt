@@ -1,0 +1,4 @@
+inflater.inflate(R.layout.item_cate, parent, false);
+如果不加上parent，会造成bug。
+
+比如item宽度是match_parent , 父控件宽度是match_parent，item只会wrap_content

@@ -1,20 +1,14 @@
 git init
 
-
 ssh-keygen -t rsa -C "695678923@qq.com"
 
-
 ssh -T git@github.com
-
 
 git config --global user.name "your name"
 git config --global user.email "your_email@youremail.com"
 
-
 //Èç¹û³ö´í£¨git remote rm origin£©
 git remote add origin git@github.com:yourName/yourRepo.git
-
-
 
 git add README
 

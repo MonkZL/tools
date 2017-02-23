@@ -1,0 +1,26 @@
+private void syncCookie(Context context, String url) {
+        try {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+                CookieSyncManager.createInstance(context);
+            }
+            CookieManager cookieManager = CookieManager.getInstance();
+            cookieManager.removeAllCookie();
+            cookieManager.setAcceptCookie(true);
+            PersistentCookieStore persistentCookieStore = new PersistentCookieStore();
+            for (Cookie cookie : persistentCookieStore.getAllCookie()) {
+
+                String cookieString = cookie.name() + "=" + cookie.value();
+                cookieManager.setCookie(url, cookieString);
+                cookieManager.setCookie("http://redirect.0576tg.cn/", cookieString);
+                cookieManager.setCookie("http://tg.ctospace.com:11002/top/authBind", cookieString);
+                CookieSyncManager.getInstance().sync();
+            }
+        } catch (Exception e) {
+            Log.e("Nat: webView.syncCookie failed", e.toString());
+        }
+    }
+
+该方法要在webview.loadUrl()之前;
+特别注意的是cookieManager.setCookie();
+后面的cookie不能有分号，有分号是默认cookie结束
+要以"key = value;" 一个一个 setCookie()
