@@ -1,0 +1,23 @@
+Error:A problem was found with the configuration of task ':app:packageDebug'.  
+> File 'E:\AndroidStudio\work\AUWoQu\YingYongShiChang\app\build\intermediates\res\resources-debug-stripped.ap_' specified for property 'resourceFile' does not exist. 
+
+
+
+打开app的build.gradle
+
+将shrinkResources 设置为false
+
+buildTypes {  
+        release {  
+            minifyEnabled true  
+            shrinkResources false  
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'  
+        }  
+        debug {  
+            //开启代码混淆  
+            minifyEnabled false  
+            // 移除无用的resource文件  
+            shrinkResources false  
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'  
+        }  
+    }  

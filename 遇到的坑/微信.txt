@@ -1,0 +1,5 @@
+微信登录的activity是独自开启了一个栈 
+如果你的indexactivity是singletask 
+你并不能通过start indexactivity的方式弹出indexactivity上面的activity
+
+最好采用广播的形式来finish

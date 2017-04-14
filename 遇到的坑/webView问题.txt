@@ -1,0 +1,3 @@
+//蘑菇街验证需要旋转的图片加载出错，调用该方法以pc模式启动
+WebSettings settings = web.getSettings();
+settings.setUserAgentString("pc");

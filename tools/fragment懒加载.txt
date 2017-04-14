@@ -1,0 +1,20 @@
+//只有在viewpager里面才有用
+@Override  
+   public void setUserVisibleHint(boolean isVisibleToUser) {  
+       super.setUserVisibleHint(isVisibleToUser);  
+       if (isVisibleToUser) {  
+           //相当于Fragment的onResume  
+       } else {  
+           //相当于Fragment的onPause  
+       }  
+   }  
+
+
+//显示或隐藏
+@Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+    }
+
+
+

@@ -1,0 +1,4 @@
+//保留两位小数
+    public static double get2Double(double i){
+        return new BigDecimal(i).setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
+    }
