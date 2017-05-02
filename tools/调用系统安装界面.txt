@@ -1,0 +1,8 @@
+//启用系统安装界面
+    private void instantApk(File file) {
+        Intent intent = new Intent("android.intent.action.VIEW");
+        intent.addCategory("android.intent.category.DEFAULT");
+        intent.setDataAndType(Uri.fromFile(file), "application/vnd.android.package-archive");
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivityForResult(intent, 0);
+    }

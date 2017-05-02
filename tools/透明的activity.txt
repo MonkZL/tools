@@ -1,0 +1,22 @@
+ 
+
+try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                Window window = getWindow();
+                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                window.setStatusBarColor(getResources().getColor(android.R.color.transparent));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+放到setcontentview之前
+
+
+<style name="MyDialogTopRight" parent="AppTheme">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
+
+activity的theme
