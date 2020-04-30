@@ -1,5 +1,5 @@
 /**
-     * ´´½¨PopupWindow
+     * ï¿½ï¿½ï¿½ï¿½PopupWindow
      */
     protected void initPopuptWindow() {
 
@@ -10,11 +10,13 @@
         params.alpha = 0.7f;
         getWindow().setAttributes(params);
 
-        //µã»÷ÆäËûµØ·½ÏûÊ§
+        //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø·ï¿½ï¿½ï¿½Ê§
         popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override
             public void onDismiss() {
                 closePopupWindow();
+
+                
             }
         });
 
@@ -22,7 +24,7 @@
     }
 
     /**
-     * ¹Ø±Õ´°¿Ú
+     * ï¿½Ø±Õ´ï¿½ï¿½ï¿½
      */
     private void closePopupWindow() {
         popupWindow.dismiss();
