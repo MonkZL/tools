@@ -14,7 +14,7 @@
         popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override
             public void onDismiss() {
-                closePopupWindow();
+                clzzzzosePopupWindow();
             }
         });
 
