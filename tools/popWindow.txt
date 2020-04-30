@@ -15,8 +15,6 @@
             @Override
             public void onDismiss() {
                 closePopupWindow();
-
-                
             }
         });
 
